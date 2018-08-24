@@ -4,7 +4,7 @@
 const crypto = require('crypto');
 
 // Others
-const config = require('../configs/config.json');
+const config = require('../../configs/config.json');
 
 const verifySignature = function verifySignature(signature, payloadBody) {
     const HMAC = `sha1=${crypto.createHmac('sha1', config.authorization)

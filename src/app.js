@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 // Others
 const { Logger } = require('./utils/Logger.js');
-const config = require('./configs/config.json');
+const config = require('../configs/config.json');
 
 const routes = require('./routes/index');
 

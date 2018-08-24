@@ -4,8 +4,8 @@
 const superagent = require('superagent');
 
 // Others
-const webhooks = require('../configs/webhooks.json');
-const config = require('../configs/config.json');
+const webhooks = require('../../configs/webhooks.json');
+const config = require('../../configs/config.json');
 const { Logger }  = require('../utils/Logger');
 const verifySignature = require('../utils/utils').verifySignature;
 

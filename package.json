@@ -19,7 +19,7 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node src/app.js",
-    "pm2start": "pm2 start scripts/start.js"
+    "pm2start": "node scripts/start.js"
   },
   "repository": {
     "type": "git",
