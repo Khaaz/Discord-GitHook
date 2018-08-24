@@ -37,6 +37,32 @@ const reqWaiting = {};
 const sleep = (ms) => new Promise((res) => setTimeout(() => res(), ms));
 
 /**
+ * Build an Headers Object from req headers object
+ * Follow exact github headers object in purpose to forward to discord
+ *
+ * @param {Object} reqHeaders
+ * @returns {Object} headers - the new headers object in the correct format
+ */
+function constructHeaders(reqHeaders) {
+    const headers = {};
+    headers.accept = reqHeaders.accept;
+    headers['content-length'] = reqHeaders['content-length'];
+    headers['content-type'] = reqHeaders['content-type'];
+    headers['user-agent'] = reqHeaders['user-agent'];
+    headers['x-forwarded-for'] = reqHeaders['x-forwarded-for'];
+    headers['x-github-delivery'] = reqHeaders['x-github-delivery'];
+    headers['x-github-event'] = reqHeaders['x-github-event'];
+
+    // Optional (SSL certificate)
+    reqHeaders['x-forwarded-proto'] ? (headers['x-forwarded-proto'] = reqHeaders['x-forwarded-proto']) : null;
+
+    // Optional Github signature
+    reqHeaders['x-hub-signature'] ? (headers['x-hub-signature'] = reqHeaders['x-hub-signature']) : null;
+
+    return headers;
+}
+
+/**
  * Request to discord And handle rate limit
  *
  * @param {Object} webhook - Object containing the webhook id and token {name: webhook.name, id: webhook.id, webhook.token }
@@ -138,17 +164,17 @@ const root = async(req, res) => {
     res.send('Success!');
     Logger.info('Forwarding github request');
 
-    // Deleting added property in the headers
-    delete req.headers.host;
+    // Creating a new headers
+    const headers = constructHeaders(req.headers);
 
     // Sending to all webhooks
     for (const webhook of webhooks) {
         if (webhook.id && webhook.token) {
             try {
-                await requester(webhook, { headers: req.headers, body: req.body });
+                await requester(webhook, { headers, body: req.body });
                 Logger.verbose(`Posted to ${webhook.name}.`);
             } catch (err) {
-                Logger.fatal(`Couldn't post to ${webhook.name}.\n${err}`);
+                Logger.fatal(`Couldn't post to ${webhook.name}.\n${err.stack}`);
             }
         }
     }
