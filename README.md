@@ -5,7 +5,9 @@ This API allows you to send requests to multiple Discord webhooks which is sent 
 
 **Notes**:
 1) Use only one webhook URL on all your repository (which should be the link to reach this API).
-2) It is highly recommended to protect this endpoint with signature verification to prevent unauthorized access to your API.
+2) It is highly recommended to protect this endpoint with signature verification to prevent unauthorized access to your API. More info about creating a secure secret [here](https://developer.github.com/webhooks/securing/).
+3) This API also supports SSL verification.
+4) The content type should be set to `application/json` when the GitHub webhook is being created, or it will cause unintended issues as Discord can't parse any other content-type.
 
 ## Instructions on setting it up!
 1) Copy paste the [config.template.json](https://github.com/Khaazz/GitHub-Discord-HookRouter/template/config-template.json) in [configs/config.json](https://github.com/Khaazz/GitHub-Discord-HookRouter/configs/).
