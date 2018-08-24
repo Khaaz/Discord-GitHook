@@ -1,3 +1,7 @@
+# configs
+configs/config.json
+configs/webhooks.json
+
 # Logs
 logs
 *.log
