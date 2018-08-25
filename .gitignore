@@ -1,6 +1,7 @@
 # configs
 configs/config.json
 configs/webhooks.json
+configs/ipbanned.json
 
 # Logs
 logs
