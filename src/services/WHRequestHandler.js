@@ -2,8 +2,8 @@
 
 const superagent = require('superagent');
 
-const { Logger } = require('./Logger');
-const { sleep } = require('./utils');
+const { Logger } = require('../utils/Logger');
+const { sleep } = require('../utils/utils');
 
 const webhooks = require('../../configs/webhooks.json');
 

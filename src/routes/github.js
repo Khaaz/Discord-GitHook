@@ -5,7 +5,8 @@ const config = require('../../configs/config.json');
 
 const { Logger }  = require('../utils/Logger');
 
-const { WHRequester } = require('../utils/WHRequestHandler');
+const { IPBanHandler } = require('../services/IPBanHandler');
+const { WHRequester } = require('../services/WHRequestHandler');
 
 const { verifySignature } = require('../utils/utils');
 
@@ -39,12 +40,14 @@ const github = async(req, res) => {
     // Checking whether the authenticity of the connection is valid
     if ((config.auth && !req.headers['x-hub-signature']) || !verifySignature(req.headers['x-hub-signature'], req.body)) {
         Logger.warn('Unauthorized connection: Refused!');
-        res.send('Unauthorized!');
+        res.status(403).send('Unauthorized!');
 
         const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0])
             || req.ip
             || (req.connection && req.connection.remoteAddress);
-        Logger.verbose(`IP: ${ip ? ip : 'not-found'}`);
+        Logger.warn(`IP: ${ip}`);
+
+        IPBanHandler.countBan(ip);
         return;
     }
 
