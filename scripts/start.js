@@ -3,7 +3,7 @@
 const pm2 = require('pm2');
 
 // Start process
-console.log('>> Starting GitHub-Discord-HookRouter');
+console.log('>> Starting Git-Discord-HookRouter');
 pm2.connect((err) => {
     if (err) {
         console.error(err);
