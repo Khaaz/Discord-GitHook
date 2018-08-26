@@ -1,7 +1,7 @@
 {
-  "name": "github-discord-hookrouter",
-  "version": "1.0.0",
-  "description": "Route github webhooks to discord",
+  "name": "git-discord-hookrouter",
+  "version": "2.0.0",
+  "description": "Route github and gitlab webhook requests to discord",
   "author": "KhaaZ#0001",
   "license": "MIT",
   "main": "index.js",
@@ -23,14 +23,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Khaazz/discordWebhooksRouter.git"
+    "url": "git+https://github.com/Khaazz/Git-Discord-HookRouter.git"
   },
   "bugs": {
-    "url": "https://github.com/Khaazz/discordWebhooksRouter/issues"
+    "url": "https://github.com/Khaazz/Git-Discord-HookRouter/issues"
   },
-  "homepage": "https://github.com/Khaazz/discordWebhooksRouter#readme",
+  "homepage": "https://github.com/Khaazz/Git-Discord-HookRouter#readme",
   "keywords": [
     "github",
+    "gitlab",
     "discord",
     "webhooks",
     "router",
