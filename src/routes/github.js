@@ -53,7 +53,13 @@ const github = async(req, res) => {
         return;
     }
 
-    Logger.notice(`Github: ${req.body.repository.full_name} - ${req.body.repository.url}`);
+    if (req.body.organization) {
+        Logger.notice(`Github: ${req.body.organization.login} - ${req.body.organization.url}`);
+    }
+    if (req.body.repository) {
+        Logger.notice(`Github: ${req.body.repository.full_name} - ${req.body.repository.url}`);
+    }
+    
     res.send('Success!');
     Logger.info('Forwarding github request');
 

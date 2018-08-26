@@ -1,14 +1,14 @@
 # GitHub-Discord-HookRouter
 Manage all your GitHub / GitLab webhooks with one URL.  
-This lightweight API allows you to route github webhook requests to Discord. Allows easy management of multiple webhooks. Features signature verification, rate-limit handling, IP banning and verification, and cool logging.
+This lightweight API allows you to route github and gitlab webhook requests to Discord. Allows easy management of multiple webhooks. Features signature verification, rate-limit handling, IP banning and verification, and cool logging.
 
 It allows you to send requests to multiple Discord webhooks which is sent from GitHub. As you guessed it, this API will act as the POSTman in delivering the requests. It also auto-bans IP addresses on repeated access if the request is unauthorized. This API also supports SSL verification header sent by GitHub.
 
 ### Precautions:
-1) Use only one webhook URL on all your repository (which should be the link to reach this API).
+1) Use only one webhook URL on all your repository (GitHub + GitLab) (which should be the link to reach this API).
 2) It is highly recommended to protect this endpoint with signature verification to prevent unauthorized access to your API. More info about creating a secure secret with a high entropy could be found [here](https://developer.github.com/webhooks/securing/).
 3) The content type should be set to `application/json` when the GitHub webhook is being created, or it will cause unintended issues as Discord can't parse any other content-type.
-4) Although this API supports handling requests from the baseURL, we recommend you to use the allocated path of the webhook. For example, use the path `/github` if you're using this API for managing GitHub requests.
+4) Although this API supports handling requests from the baseURL, we recommend you to use the allocated path of the webhook. For example, use the path `/github` if you're using this API for managing GitHub requests and `/gitlab` when using this API for manging GitLab requests.
 
 ## Instructions on setting it up!
 1) Copy paste the [config.template.json](https://github.com/Khaazz/GitHub-Discord-HookRouter/template/config-template.json) in [configs/config.json](https://github.com/Khaazz/GitHub-Discord-HookRouter/configs/).
