@@ -18,9 +18,9 @@ router.get('/', (req, res) => {
 // Redirecting post requests from base endpoint to github or gitlab functions
 router.post('/', (req, res) => {
     try {
-        if (req.headers['x-hub-signature']) {
+        if (req.headers['x-github-delivery']) {
             github(req, res);
-        } else if (req.headers['x-gitlab-signature']) {
+        } else if (req.headers['x-gitlab-event']) {
             gitlab(req, res);
         }
     } catch (err) {

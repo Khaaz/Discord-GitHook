@@ -1,10 +1,10 @@
 # GitHub-Discord-HookRouter
-All your webhooks with one URL.
+Manage all your GitHub / GitLab webhooks with one URL.
 A Lightweight API that routes github webhook requests to Discord. Allows easy management of multiple webhooks. Features signature verification, rate-limit handling, IP banning and verification, and cool logging.
 
 This API allows you to send requests to multiple Discord webhooks which is sent from GitHub. As you guessed it, this API will act as the POSTman in delivering the requests. This API also auto-bans IP addresses on repeated access if it is unauthorized.
 
-**Precautions**:
+### Precautions:
 1) Use only one webhook URL on all your repository (which should be the link to reach this API).
 2) It is highly recommended to protect this endpoint with signature verification to prevent unauthorized access to your API. More info about creating a secure secret with a high entropy could be found [here](https://developer.github.com/webhooks/securing/).
 3) This API also supports SSL verification header sent by GitHub.

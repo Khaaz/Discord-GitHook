@@ -6,7 +6,7 @@ const config = require('../../configs/config.json');
 const { Logger }  = require('../utils/Logger');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { WHRequester } = require('../services/WHRequestHandler');
+const { WHRequestHandler } = require('../services/WHRequestHandler');
 
 const { verifySignature } = require('../utils/utils');
 
@@ -38,7 +38,9 @@ function constructHeaders(reqHeaders) {
 
 const github = async(req, res) => {
     // Checking whether the authenticity of the connection is valid
-    if ((config.auth && !req.headers['x-hub-signature']) || !verifySignature(req.headers['x-hub-signature'], req.body)) {
+    if (!req.headers['x-github-delivery']
+        || (config.auth && !req.headers['x-hub-signature'])
+        || !verifySignature(req.headers['x-hub-signature'], req.body)) {
         Logger.warn('Unauthorized connection: Refused!');
         res.status(403).send('Unauthorized!');
 
@@ -59,10 +61,10 @@ const github = async(req, res) => {
     const headers = constructHeaders(req.headers);
 
     // Sending to all webhooks
-    for (const webhook of WHRequester.webhooks) {
+    for (const webhook of WHRequestHandler.webhooks) {
         if (webhook.id && webhook.token) {
             try {
-                await WHRequester.request(webhook, { headers, body: req.body }, true);
+                await WHRequestHandler.request(webhook, { headers, body: req.body }, true);
                 Logger.verbose(`Posted to ${webhook.name}.`);
             } catch (err) {
                 Logger.fatal(`Couldn't post to ${webhook.name}.\n${err.stack}`);
@@ -70,7 +72,8 @@ const github = async(req, res) => {
         }
     }
 
-    WHRequester.executeWaiting();
+    // Executing all pending request
+    WHRequestHandler.executeWaiting();
 };
 
 exports.github = github;

@@ -149,4 +149,4 @@ class WHRequestHandler {
     }
 }
 
-exports.WHRequester = new WHRequestHandler();
+exports.WHRequestHandler = new WHRequestHandler();
