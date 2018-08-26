@@ -34,10 +34,7 @@ const gitlab = async(req, res) => {
     const body = {
         username: 'GitLab',
         avatar_url: `https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo.png`,
-        embeds: [
-            // parsing a discord formatted embed with req datas
-            Parser.parse(req.body),
-        ],
+        embeds: Parser.parse(req.body), // parsing a discord formatted array of embeds with req datas
     };
 
     const headers = { 'Content-Type': 'application/json' };
