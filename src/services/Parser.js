@@ -125,11 +125,18 @@ class Parser {
 
             const desc = [];
             for (const commit of data.commits) {
-                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}) ${this.formatString(String(commit.message))} - ${commit.author.name.trim()}`);
+                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}?view=parallel) ${this.formatString(String(commit.message))} - ${commit.author.name.trim()}`);
             }
             embedRef.description = (desc.length > 5) ? desc.splice(6, desc.length).join('\n') : desc.join('\n');
 
             embedRef.url = `https://gitlab.com/${data.project.path_with_namespace}/commit/${data.after}/?view=parallel`;
+        } else if (data.commits.length === 0) {
+            const embedRef = embed2 || embed;
+            embedRef.color = colors.pushEvent;
+
+            embedRef.title = `[${data.project.name}] Branch ${data.ref.split('/').pop()} was force pushed to \`${data.after.slice(0, 6)}\``;
+
+            embedRef.description = `[Compare changes](https://gitlab.com/${data.project.path_with_namespace}/commit/${data.after}?view=parallel)`;
         }
 
         embed2 ? embeds.push(embed, embed2) : embeds.push(embed);
