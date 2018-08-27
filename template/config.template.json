@@ -3,5 +3,5 @@
     "auth": true,
     "authorizationGithub": "secret",
     "authorizationGitlab": "secret",
-    "blacklisted": []
+    "blacklisted": ["ip", "ip"]
 }
