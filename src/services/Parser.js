@@ -108,9 +108,9 @@ class Parser {
                 embed2 = Object.assign({}, embed);
             }
 
-            embed.title += `[${data.project.path_with_namespace}] New branch created: ${data.ref.split('/').pop()}`;
+            embed.title = `[${data.project.path_with_namespace}] New branch created: ${data.ref.split('/').pop()}`;
         } else if (this.zeroMatch(data.after)) { // branch deleted
-            embed.title += `[${data.project.path_with_namespace}] Branch deleted: ${data.ref.split('/').pop()}`;
+            embed.title = `[${data.project.path_with_namespace}] Branch deleted: ${data.ref.split('/').pop()}`;
 
             embeds.push(embed);
             return embeds;
