@@ -13,7 +13,7 @@ const { Parser } = require('../services/Parser');
 const gitlab = async(req, res) => {
     if (!req.headers['x-gitlab-event']
         || (config.auth && !req.headers['x-gitlab-token'])
-        || req.headers['x-gitlab-token'] !== config.authorization) {
+        || req.headers['x-gitlab-token'] !== config.authorizationGitlab) {
         Logger.warn('Unauthorized connection: Refused!');
         res.status(403).send('Unauthorized!');
 

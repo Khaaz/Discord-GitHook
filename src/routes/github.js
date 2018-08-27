@@ -8,7 +8,7 @@ const { Logger }  = require('../utils/Logger');
 const { IPBanHandler } = require('../services/IPBanHandler');
 const { WHRequestHandler } = require('../services/WHRequestHandler');
 
-const { verifySignature } = require('../utils/utils');
+const { verifyGithubSignature } = require('../utils/utils');
 
 /**
  * Build an Headers Object from req headers object
@@ -40,7 +40,7 @@ const github = async(req, res) => {
     // Checking whether the authenticity of the connection is valid
     if (!req.headers['x-github-delivery']
         || (config.auth && !req.headers['x-hub-signature'])
-        || !verifySignature(req.headers['x-hub-signature'], req.body)) {
+        || !verifyGithubSignature(req.headers['x-hub-signature'], req.body)) {
         Logger.warn('Unauthorized connection: Refused!');
         res.status(403).send('Unauthorized!');
 
@@ -59,7 +59,7 @@ const github = async(req, res) => {
     if (req.body.repository) {
         Logger.notice(`Github: ${req.body.repository.full_name} - ${req.body.repository.url}`);
     }
-    
+
     res.send('Success!');
     Logger.info('Forwarding github request');
 
