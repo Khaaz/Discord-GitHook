@@ -4,6 +4,7 @@ const { Logger } = require('../utils/Logger');
 
 const colors = {
     pushEvent: 7506394,
+    forcePushEvent: 16525609,
     tagEvent: null,
     mergeOpenEvent: 38912,
     mergeCloseEvent: null,
@@ -132,7 +133,7 @@ class Parser {
             embedRef.url = `https://gitlab.com/${data.project.path_with_namespace}/commit/${data.after}/?view=parallel`;
         } else if (data.commits.length === 0) {
             const embedRef = embed2 || embed;
-            embedRef.color = colors.pushEvent;
+            embedRef.color = colors.forcePushEvent;
 
             embedRef.title = `[${data.project.name}] Branch ${data.ref.split('/').pop()} was force pushed to \`${data.after.slice(0, 6)}\``;
 
