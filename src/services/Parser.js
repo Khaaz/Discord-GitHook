@@ -181,7 +181,7 @@ class Parser {
             embed.color = colors.issueOpenEvent;
         } else if (data.object_attributes.action === 'reopen') {
             embed.title += `Issue reopened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
-        }  else if (data.object_attributes.action === 'close') { // Issue close
+        } else if (data.object_attributes.action === 'close') { // Issue close
             embed.title += `Issue closed: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
         } else {
             return;
