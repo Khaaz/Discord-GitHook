@@ -181,8 +181,10 @@ class Parser {
             embed.color = colors.issueOpenEvent;
         } else if (data.object_attributes.action === 'reopen') {
             embed.title += `Issue reopened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
-        } else { // Issue close
+        } else if (data.object_attributes.action === 'close') { // Issue close
             embed.title += `Issue closed: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
+        } else {
+            return;
         }
         return embed;
     }
@@ -204,8 +206,10 @@ class Parser {
             embed.color = colors.mergeOpenEvent;
         } else if (data.object_attributes.action === 'reopen') {
             embed.title += `Merge Request reopened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
-        } else { // PR close
+        } else if (data.object_attributes.action === 'close') { // PR close
             embed.title += `Merge Request closed: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
+        } else {
+            return;
         }
 
         return embed;
