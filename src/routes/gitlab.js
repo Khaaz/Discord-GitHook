@@ -13,7 +13,7 @@ const { Parser } = require('../services/Parser');
 const gitlab = async(req, res) => {
     if (!req.headers['x-gitlab-event']
         || (config.auth && !req.headers['x-gitlab-token'])
-        || req.headers['x-gitlab-token'] !== config.authorizationGitlab) {
+        || (config.auth && req.headers['x-gitlab-token'] !== config.authorizationGitlab)) {
         Logger.warn('Unauthorized connection: Refused!');
         res.status(403).send('Unauthorized!');
 
@@ -26,15 +26,20 @@ const gitlab = async(req, res) => {
         return;
     }
 
-    Logger.notice(`Gitlab: ${req.body.project.path_with_namespace} - ${req.body.project.http_url}`); // TO CHANGE
+    Logger.notice(`Gitlab: ${req.body.project ? `${req.body.project.path_with_namespace} - ${req.body.project.http_url}` : ''} `); // TO CHANGE
     res.send('Success!');
     Logger.info('Forwarding gitlab request');
 
+    const embeds = Parser.parse(req.body);
+    // Close guard: doesn't send webhook if no embeds have been constructed
+    if (embeds.length === 0) {
+        return;
+    }
     // Creating body formatted for discord
     const body = {
         username: 'GitLab',
         avatar_url: `https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo.png`,
-        embeds: Parser.parse(req.body), // parsing a discord formatted array of embeds with req datas
+        embeds, // parsing a discord formatted array of embeds with req datas
     };
 
     const headers = { 'Content-Type': 'application/json' };
