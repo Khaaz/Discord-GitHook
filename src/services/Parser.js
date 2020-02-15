@@ -64,11 +64,11 @@ class Parser {
                 break;
             }
             case 'pipeline': {
-                console.log(data);
                 embeds.push(this.pipelineEvent(data, embed));
                 break;
             }
             case 'build': {
+                console.log('BUILD:\n', data);
                 embed.title = `[${data.project_name}] BUILD Event`;
                 embed.description = 'Unsupported event';
                 embeds.push(embed);
