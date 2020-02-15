@@ -64,14 +64,13 @@ class Parser {
                 break;
             }
             case 'pipeline': {
-                embeds.push(this.pipelineEvent(data, embed));
+                const e = this.pipelineEvent(data, embed);
+                e && embeds.push(e);
                 break;
             }
             case 'build': {
-                console.log('BUILD:\n', data);
-                embed.title = `[${data.project_name}] BUILD Event`;
-                embed.description = 'Unsupported event';
-                embeds.push(embed);
+                const e = this.jobEvent(data, embed);
+                e && embeds.push(e);
                 break;
             }
             default: {
@@ -277,9 +276,12 @@ class Parser {
         } else if (data.object_attributes.status === 'failed') {
             embed.color = colors.pipelineFail;
             embed.title += '**failed**';
-        } else {
+        } else if (data.object_attributes.status === 'running') {
             embed.color = colors.pipelinePending;
             embed.title += '**running**';
+        } else {
+            // pending pipeline: no log
+            return null;
         }
         const stages = data.object_attributes.stages.length;
         embed.title += ` with ${stages} stage${stages > 1 ? 's' : ''}!`;
@@ -289,6 +291,21 @@ class Parser {
     }
 
     static jobEvent(data, embed) {
+        embed.title = `[${data.repository.name}#${data.ref}] Build `;
+        if (data.build_status === 'success') {
+            embed.color = colors.pipelineSuccess;
+            embed.title += '**successful**:';
+        } else if (data.build_status === 'failed') {
+            embed.color = colors.pipelineFail;
+            embed.title += '**failed**:';
+        } else {
+            // created / running: no log
+            return null;
+        }
+        embed.title += ` ${data.build_name}.`;
+
+        embed.url = `${data.repository.homepage}/-/jobs/${data.build_id}`;
+
         return embed;
     }
 
