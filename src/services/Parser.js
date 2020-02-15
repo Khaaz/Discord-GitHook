@@ -14,6 +14,9 @@ const colors = {
     issueCommentEvent: 15109472,
     wikiCreateEvent: 4483904,
     wikiDeleteEvent: 12340029,
+    pipelinePending: 16771840,
+    pipelineSuccess: 65280,
+    pipelineFail: 16711680,
 };
 
 
@@ -61,9 +64,8 @@ class Parser {
                 break;
             }
             case 'pipeline': {
-                embed.title = `[${data.project.path_with_namespace}] PIPELINE Event`;
-                embed.description = 'Unsupported event';
-                embeds.push(embed);
+                console.log(data);
+                embeds.push(this.pipelineEvent(data, embed));
                 break;
             }
             case 'build': {
@@ -264,6 +266,29 @@ class Parser {
             embed.color = colors.wikiDeleteEvent;
         }
 
+        return embed;
+    }
+
+    static pipelineEvent(data, embed) {
+        embed.title = `[${data.project.namespace}/${data.project.name}#${data.object_attributes.ref}] Pipeline `;
+        if (data.object_attributes.status === 'success') {
+            embed.color = colors.pipelineSuccess;
+            embed.title += '**successful**';
+        } else if (data.object_attributes.status === 'failed') {
+            embed.color = colors.pipelineFail;
+            embed.title += '**failed**';
+        } else {
+            embed.color = colors.pipelinePending;
+            embed.title += '**running**';
+        }
+        const stages = data.object_attributes.stages.length;
+        embed.title += ` with ${stages} stage${stages > 1 ? 's' : ''}!`;
+        embed.url = data.commit.url;
+
+        return embed;
+    }
+
+    static jobEvent(data, embed) {
         return embed;
     }
 
