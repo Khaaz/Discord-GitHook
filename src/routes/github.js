@@ -8,7 +8,7 @@ const { Logger }  = require('../utils/Logger');
 const { IPBanHandler } = require('../services/IPBanHandler');
 const { RequestManager } = require('../services/requester/RequestManager');
 
-const { verifyGithubSignature } = require('../utils/utils');
+const { verifyGithubSignature, UNAUTHORIZED_CODE } = require('../utils/utils');
 
 /**
  * Build an Headers Object from req headers object
@@ -28,10 +28,15 @@ function constructHeaders(reqHeaders) {
     headers['x-github-event'] = reqHeaders['x-github-event'];
 
     // Optional (SSL certificate)
-    reqHeaders['x-forwarded-proto'] ? (headers['x-forwarded-proto'] = reqHeaders['x-forwarded-proto']) : null;
+    if (reqHeaders['x-forwarded-proto'] ) {
+        headers['x-forwarded-proto'] = reqHeaders['x-forwarded-proto'];
+    }
 
     // Optional Github signature
-    reqHeaders['x-hub-signature'] ? (headers['x-hub-signature'] = reqHeaders['x-hub-signature']) : null;
+    if (reqHeaders['x-hub-signature'] ) {
+        headers['x-hub-signature'] = reqHeaders['x-hub-signature'];
+    }
+     
 
     return headers;
 }
@@ -39,12 +44,12 @@ function constructHeaders(reqHeaders) {
 const github = async(req, res) => {
     // Checking whether the authenticity of the connection is valid
     if (!req.headers['x-github-delivery']
-        || (config.auth && !req.headers['x-hub-signature'])
-        || !verifyGithubSignature(req.headers['x-hub-signature'], req.body)) {
+        || (config.auth && !req.headers['x-hub-signature'] )
+        || !verifyGithubSignature(req.headers['x-hub-signature'], req.body) ) {
         Logger.warn('Unauthorized connection: Refused!');
-        res.status(403).send('Unauthorized!');
+        res.status(UNAUTHORIZED_CODE).send('Unauthorized!');
 
-        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0])
+        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0] )
             || req.ip
             || (req.connection && req.connection.remoteAddress);
         Logger.warn(`IP: ${ip}`);
@@ -66,7 +71,7 @@ const github = async(req, res) => {
     // Creating new headers
     const headers = constructHeaders(req.headers);
 
-    RequestManager.request({ headers, body: req.body }, true);
+    RequestManager.request( { headers, body: req.body }, true);
 };
 
 exports.github = github;

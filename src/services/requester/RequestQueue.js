@@ -1,6 +1,6 @@
 'use strict';
 
-const { sleep } = require('../../utils/utils');
+const { sleep, RATELIMIT_CODE } = require('../../utils/utils');
 const { Logger } = require('../../utils/Logger');
 
 /**
@@ -22,6 +22,7 @@ class RequestQueue {
         this._functions = [];
         this._running = false;
     }
+
     /**
      * Execute the RequestQueue.
      * Handles ratelimits
@@ -46,7 +47,7 @@ class RequestQueue {
                 }
             } catch (err) {
                 // Error due to ratelimit, retrying the request and delaying
-                if (err.status === 429) {
+                if (err.status === RATELIMIT_CODE) {
                     Logger.debug(`Already RateLimited for ${func.name}: delaying and retrying...`);
                     this._functions.unshift(func);
                     delay = err.response.headers['x-ratelimit-reset-after'];
@@ -79,10 +80,10 @@ class RequestQueue {
      * @memberof AsyncRequestQueue
      */
     add(func, whName) {
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise( (resolve, reject) => {
             const fn = { name: whName, run: func, resolve, reject };
             this._functions.push(fn);
-        });
+        } );
 
         if (!this._running) {
             this.exec();

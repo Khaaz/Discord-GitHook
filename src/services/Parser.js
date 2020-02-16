@@ -19,6 +19,8 @@ const colors = {
     pipelineFail: 16711680,
 };
 
+const MAX_SIZE_DESCRIPTION = 800;
+
 
 class Parser {
     /**
@@ -44,23 +46,23 @@ class Parser {
                 return this.pushEvent(data, embed, embeds);
             }
             case 'tag_push': {
-                embeds.push(this.tagPushEvent(data, embed, embeds));
+                embeds.push(this.tagPushEvent(data, embed, embeds) );
                 break;
             }
             case 'issue': {
-                embeds.push(this.issueEvent(data, embed));
+                embeds.push(this.issueEvent(data, embed) );
                 break;
             }
             case 'merge_request': {
-                embeds.push(this.prEvent(data, embed));
+                embeds.push(this.prEvent(data, embed) );
                 break;
             }
             case 'note': {
-                embeds.push(this.commentEvent(data, embed));
+                embeds.push(this.commentEvent(data, embed) );
                 break;
             }
             case 'wiki_page': {
-                embeds.push(this.wikiEvent(data, embed));
+                embeds.push(this.wikiEvent(data, embed) );
                 break;
             }
             case 'pipeline': {
@@ -97,14 +99,14 @@ class Parser {
         let embed2 = null;
 
         // specific
-        if (this.zeroMatch(data.before)) { // new branch created
+        if (this.zeroMatch(data.before) ) { // new branch created
             if (data.commits.length > 0) { // commits
                 // create a second (copying embed)
-                embed2 = Object.assign({}, embed);
+                embed2 = Object.assign( {}, embed);
             }
 
             embed.title = `[${data.project.path_with_namespace}] New branch created: ${data.ref.split('/').pop()}`;
-        } else if (this.zeroMatch(data.after)) { // branch deleted
+        } else if (this.zeroMatch(data.after) ) { // branch deleted
             embed.title = `[${data.project.path_with_namespace}] Branch deleted: ${data.ref.split('/').pop()}`;
 
             embeds.push(embed);
@@ -120,7 +122,7 @@ class Parser {
 
             const desc = [];
             for (const commit of data.commits) {
-                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}?view=parallel) ${this.removeLB(this.formatString(String(commit.message)))} - ${commit.author.name.trim()}`);
+                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}?view=parallel) ${this.removeLB(this.formatString(String(commit.message) ) )} - ${commit.author.name.trim()}`);
             }
             embedRef.description = (desc.length > 5) ? desc.slice(0, 5).join('\n') : desc.join('\n');
 
@@ -171,14 +173,14 @@ class Parser {
         // specific
         if (data.object_attributes.action === 'open') { // Issue open
             embed.title += `Issue opened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
-            embed.description = this.formatString(data.object_attributes.description, 800);
+            embed.description = this.formatString(data.object_attributes.description, MAX_SIZE_DESCRIPTION);
             embed.color = colors.issueOpenEvent;
         } else if (data.object_attributes.action === 'reopen') {
             embed.title += `Issue reopened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
         } else if (data.object_attributes.action === 'close') { // Issue close
             embed.title += `Issue closed: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
         } else {
-            return;
+            return null;
         }
         return embed;
     }
@@ -196,7 +198,7 @@ class Parser {
         // specific
         if (data.object_attributes.action === 'open') { // PR open
             embed.title += `Merge Request opened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
-            embed.description = this.formatString(data.object_attributes.description, 800);
+            embed.description = this.formatString(data.object_attributes.description, MAX_SIZE_DESCRIPTION);
             embed.color = colors.mergeOpenEvent;
         } else if (data.object_attributes.action === 'reopen') {
             embed.title += `Merge Request reopened: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
@@ -221,7 +223,7 @@ class Parser {
         embed.url = data.object_attributes.url;
 
         // specific
-        embed.description = this.formatString(data.object_attributes.note, 800);
+        embed.description = this.formatString(data.object_attributes.note, MAX_SIZE_DESCRIPTION);
 
         if (data.object_attributes.noteable_type === 'Commit') {
             embed.title += `New comment on commit \`${data.object_attributes.commit_id.slice(0, 6)}\``;
@@ -250,7 +252,7 @@ class Parser {
 
         if (data.object_attributes.action === 'create') {
             embed.title += `Wiki page created: ${data.object_attributes.title}`;
-            embed.description = this.formatString(data.object_attributes.content, 800);
+            embed.description = this.formatString(data.object_attributes.content, MAX_SIZE_DESCRIPTION);
             embed.color = colors.wikiCreateEvent;
         } else if (data.object_attributes.action === 'update') {
             embed.title += `Wiki page updated: ${data.object_attributes.title}`;
@@ -319,6 +321,7 @@ class Parser {
     }
 
     // cleanup string and make sure it doesn't go above limit
+    // eslint-disable-next-line no-magic-numbers
     static formatString(string, maxLength = 50) {
         return (string.length > maxLength) ? `${string.slice(0, maxLength - 3).trim()}...` : string.trim();
     }

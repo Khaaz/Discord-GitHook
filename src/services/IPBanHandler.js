@@ -21,10 +21,10 @@ try {
     Logger.info('No ipbanned file found, creating one...');
 
     writeFilePromise(join(__dirname, '../../configs/ipbanned.json'), '[]', 'utf8')
-        .then(Logger.info('File successfuly created'))
-        .catch(err => {
-            Logger.fatal(`Couldn't create the file:\n${err.stack}`);
-        });
+        .then(Logger.info('File successfuly created') )
+        .catch(e => {
+            Logger.fatal(`Couldn't create the file:\n${e.stack}`);
+        } );
 
     ipbanned = [];
 }
@@ -54,7 +54,7 @@ class IPBanHandler {
          * Set of banned ips (avoid doubles)
          * Auto create with manually banned and ipbanned
          */
-        this.banned = new Set([...config.blacklisted, ...ipbanned]);
+        this.banned = new Set( [...config.blacklisted, ...ipbanned] );
     }
 
     /**
@@ -67,7 +67,7 @@ class IPBanHandler {
      * @memberof IPBlacklist
      */
     countBan(ip, maxCount = 3) {
-        const warned = this.defered.get(ip) || this.defered.set(ip, { count: 0, maxCount });
+        const warned = this.defered.get(ip) || this.defered.set(ip, { count: 0, maxCount } );
 
         warned.count += 1;
 
@@ -101,7 +101,7 @@ class IPBanHandler {
 
     async updateAutobanned() {
         try {
-            await writeFilePromise(join(__dirname, '../../configs/ipbanned.json'), JSON.stringify([...this.banned]), 'utf8');
+            await writeFilePromise(join(__dirname, '../../configs/ipbanned.json'), JSON.stringify( [...this.banned] ), 'utf8');
         } catch (err) {
             Logger.fatal('Couldn\'t update ipbanned.json!');
             throw err;

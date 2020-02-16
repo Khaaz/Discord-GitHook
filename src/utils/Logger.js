@@ -1,4 +1,4 @@
-'use string';
+'use strict';
 
 const { Console } = require('console');
 const { format } = require('util');
@@ -25,7 +25,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     fatal(input) {
-        const mess = this.parseTime() + ' - [ FATAL ] => ' + input;
+        const mess = `${this.parseTime()} - [ FATAL ] => ${input}`;
         super.error(mess);
     }
 
@@ -36,7 +36,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     error(input) {
-        const mess = this.parseTime() + ' - [ ERROR ] => ' + input;
+        const mess = `${this.parseTime()} - [ ERROR ] => ${input}`;
         super.error(mess);
     }
 
@@ -48,7 +48,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     warn(input) {
-        const mess = this.parseTime() + ' - [ WARN  ] => ' + input;
+        const mess = `${this.parseTime()} - [ WARN  ] => ${input}`;
         super.warn(mess);
     }
 
@@ -59,7 +59,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     debug(input) {
-        const mess = this.parseTime() + ' - [ DEBUG ] => ' + input;
+        const mess = `${this.parseTime()} - [ DEBUG ] => ${input}`;
         this.log(mess);
     }
 
@@ -70,7 +70,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     notice(input) {
-        const mess = this.parseTime() + ' - [NOTICE ] => ' + input;
+        const mess = `${this.parseTime()} - [NOTICE ] => ${input}`;
         this.log(mess);
     }
 
@@ -81,7 +81,7 @@ class Logger extends Console {
      * @memberof Logger
      */
     info(input) {
-        const mess = this.parseTime() + ' - [ INFO  ] => ' + input;
+        const mess = `${this.parseTime()} - [ INFO  ] => ${input}`;
         this.log(mess);
     }
 
@@ -93,14 +93,14 @@ class Logger extends Console {
      * @memberof Logger
      */
     verbose(input) {
-        const mess = this.parseTime() + ' - [VERBOSE] => ' + input;
+        const mess = `${this.parseTime()} - [VERBOSE] => ${input}`;
         this.log(mess);
     }
 
 
     parseTime() {
         const current = new Date();
-        const formated = format('[ %s ]', current.getHours() + 'h:' + current.getMinutes() + 'm:' + current.getSeconds() + 's');
+        const formated = format('[ %s ]', `${current.getHours()}h:${current.getMinutes()}m:${current.getSeconds()}s`);
         return formated;
     }
 }

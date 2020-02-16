@@ -32,7 +32,7 @@ class RequestManager {
                     await executor.add(req, webhook.name);
                     Logger.verbose(`Posted to ${webhook.name}.`);
                 } catch (err) {
-                    Logger.fatal('Couldn\'t post to ' + webhook.name + '\n' + err.stack);
+                    Logger.fatal(`Couldn't post to ${webhook.name}\n${err.stack}`);
                 }
             }
         }

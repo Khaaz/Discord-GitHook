@@ -4,6 +4,7 @@
 const config = require('../../configs/config.json');
 
 const { Logger } = require('../utils/Logger');
+const { UNAUTHORIZED_CODE } = require('../utils/utils');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
 const { RequestManager } = require('../services/requester/RequestManager');
@@ -12,12 +13,12 @@ const { Parser } = require('../services/Parser');
 
 const gitlab = async(req, res) => {
     if (!req.headers['x-gitlab-event']
-        || (config.auth && !req.headers['x-gitlab-token'])
-        || (config.auth && req.headers['x-gitlab-token'] !== config.authorizationGitlab)) {
+        || (config.auth && !req.headers['x-gitlab-token'] )
+        || (config.auth && req.headers['x-gitlab-token'] !== config.authorizationGitlab) ) {
         Logger.warn('Unauthorized connection: Refused!');
-        res.status(403).send('Unauthorized!');
+        res.status(UNAUTHORIZED_CODE).send('Unauthorized!');
 
-        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0])
+        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0] )
             || req.ip
             || (req.connection && req.connection.remoteAddress);
         Logger.warn(`IP: ${ip}`);
@@ -44,7 +45,7 @@ const gitlab = async(req, res) => {
 
     const headers = { 'Content-Type': 'application/json' };
 
-    RequestManager.request({ headers, body });
+    RequestManager.request( { headers, body } );
 };
 
 exports.gitlab = gitlab;
