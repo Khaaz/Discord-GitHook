@@ -6,7 +6,7 @@ const config = require('../../configs/config.json');
 const { Logger } = require('../utils/Logger');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { WHRequestHandler } = require('../services/WHRequestHandler');
+const { RequestManager } = require('../services/requester/RequestManager');
 
 const { Parser } = require('../services/Parser');
 
@@ -44,19 +44,7 @@ const gitlab = async(req, res) => {
 
     const headers = { 'Content-Type': 'application/json' };
 
-    // Sending to all webhooks
-    for (const webhook of WHRequestHandler.webhooks) {
-        if (webhook.id && webhook.token) {
-            try {
-                await WHRequestHandler.request(webhook, { headers, body });
-                Logger.verbose(`Posted to ${webhook.name}.`);
-            } catch (err) {
-                Logger.fatal(`Couldn't post to ${webhook.name}.\n${err.stack}`);
-            }
-        }
-    }
-
-    WHRequestHandler.executeWaiting();
+    RequestManager.request({ headers, body });
 };
 
 exports.gitlab = gitlab;
