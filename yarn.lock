@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@axonteam/eslint-config@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@axonteam/eslint-config/-/eslint-config-2.2.1.tgz#92b658596028ed994507119999c407d00c8f788a"
+  integrity sha512-0Y+hi2QeWvrJ56v1LehjgDptuQoHIC5T0xllaKGKGvycK8B7DoZgEWWR1LoYZK/KMOIgDksmTBmEYlKc3681jg==
+
 "@pm2/agent@^0.5.11":
   version "0.5.14"
   resolved "https://registry.yarnpkg.com/@pm2/agent/-/agent-0.5.14.tgz#f872d049c055f3bb4ea0fa3516783a4b06914641"
