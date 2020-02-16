@@ -6,18 +6,18 @@ jobs:
     lint-js:
         runs-on: ubuntu-latest
         strategy:
-        matrix:
-            node-version: [12.x]
+            matrix:
+                node-version: [12.x]
             
         steps:
-            - uses: actions/checkout@v1
-            - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-            node-version: ${{ matrix.node-version }}
-                - name: yarn install and lint
-        run: |
-            yarn install
-            yarn lint:js
-        env:
-            CI: true
+        - uses: actions/checkout@v1
+        - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v1
+            with:
+                node-version: ${{ matrix.node-version }}
+        - name: yarn install and lint
+            run: |
+                yarn install
+                yarn lint:js
+            env:
+                CI: true
