@@ -76,13 +76,6 @@ class Parser {
             default: {
                 Logger.warn(`No matching case found for: ${data.object_kind}`);
                 const errEmbed = {
-                    /*
-                    author: {
-                        name: data.user_username || data.user.username,
-                        url: `https://gitlab.com/${data.user_username || data.user.username}`,
-                        icon_url: data.user_avatar || data.user.avatar_url,
-                    },
-                    */
                     title: 'ERROR',
                     description: 'No Matching Case Found!',
                     color: 16711680,
@@ -97,7 +90,7 @@ class Parser {
         // global
         embed.author = {
             name: data.user_username,
-            url: `https://gitlab.com/${data.user_username}`,
+            url: `${this.getDomain(data.project.web_url)}${data.user_username}`,
             icon_url: data.user_avatar,
         };
 
@@ -131,14 +124,14 @@ class Parser {
             }
             embedRef.description = (desc.length > 5) ? desc.slice(0, 5).join('\n') : desc.join('\n');
 
-            embedRef.url = `https://gitlab.com/${data.project.path_with_namespace}/commit/${data.after}/?view=parallel`;
+            embedRef.url = `${data.project.homepage}/commit/${data.after}/?view=parallel`;
         } else if (data.commits.length === 0) {
             const embedRef = embed2 || embed;
             embedRef.color = colors.forcePushEvent;
 
             embedRef.title = `[${data.project.name}] Branch ${data.ref.split('/').pop()} was force pushed to \`${data.after.slice(0, 6)}\``;
 
-            embedRef.description = `[Compare changes](https://gitlab.com/${data.project.path_with_namespace}/commit/${data.after}?view=parallel)`;
+            embedRef.description = `[Compare changes](${data.project.homepage}/commit/${data.after}?view=parallel)`;
         }
 
         embed2 ? embeds.push(embed, embed2) : embeds.push(embed);
@@ -149,7 +142,7 @@ class Parser {
         // global
         embed.author = {
             name: data.user_username,
-            url: `https://gitlab.com/${data.user_username}`,
+            url: `${this.getDomain(data.project.web_url)}${data.user_username}`,
             icon_url: data.user_avatar,
         };
         embed.title = `[${data.project.path_with_namespace}] `;
@@ -169,7 +162,7 @@ class Parser {
         // global
         embed.author = {
             name: data.user.username,
-            url: `https://gitlab.com/${data.user.username}`,
+            url: `${this.getDomain(data.project.web_url)}${data.user.username}`,
             icon_url: data.user.avatar_url,
         };
         embed.title = `[${data.project.path_with_namespace}] `;
@@ -194,11 +187,11 @@ class Parser {
         // global
         embed.author = {
             name: data.user.username,
-            url: `https://gitlab.com/${data.user.username}`,
+            url: `${this.getDomain(data.project.web_url)}${data.user.username}`,
             icon_url: data.user.avatar_url,
         };
         embed.title = `[${data.project.path_with_namespace}] `;
-        embed.url = `https://gitlab.com/${data.project.path_with_namespace}/merge_requests/${data.object_attributes.iid}`;
+        embed.url = `${data.project.homepage}/merge_requests/${data.object_attributes.iid}`;
 
         // specific
         if (data.object_attributes.action === 'open') { // PR open
@@ -210,8 +203,9 @@ class Parser {
         } else if (data.object_attributes.action === 'close') { // PR close
             embed.title += `Merge Request closed: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
         } else {
-            return;
+            embed.title += `Merge Request updated: #${data.object_attributes.iid} ${this.formatString(data.object_attributes.title)}`;
         }
+        console.log(embed);
 
         return embed;
     }
@@ -220,7 +214,7 @@ class Parser {
         // global
         embed.author = {
             name: data.user.username,
-            url: `https://gitlab.com/${data.user.username}`,
+            url: `${this.getDomain(data.project.web_url)}${data.user.username}`,
             icon_url: data.user.avatar_url,
         };
         embed.title = `[${data.project.path_with_namespace}] `;
@@ -309,10 +303,22 @@ class Parser {
         return embed;
     }
 
+    // parse total url to get the domain only (for selfhosted instance)
+    static getDomain(string) {
+        // non-greedy lookup
+        const re = /^http[s]?:\/\/.*?\//;
+        const match = re.exec(string);
+        return match
+            ? match[0]
+            : 'https://gitlab.com/';
+    }
+
+    // remove linebreak - replace with space
     static removeLB(string) {
         return string.replace(/(\r\n\t|\n|\r\t)/gm, ' ');
     }
 
+    // cleanup string and make sure it doesn't go above limit
     static formatString(string, maxLength = 50) {
         return (string.length > maxLength) ? `${string.slice(0, maxLength - 3).trim()}...` : string.trim();
     }
