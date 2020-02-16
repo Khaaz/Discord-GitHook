@@ -6,7 +6,7 @@ const config = require('../../configs/config.json');
 const { Logger }  = require('../utils/Logger');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { WHRequestHandler } = require('../services/WHRequestHandler');
+const { RequestManager } = require('../services/requester/RequestManager');
 
 const { verifyGithubSignature } = require('../utils/utils');
 
@@ -66,20 +66,7 @@ const github = async(req, res) => {
     // Creating new headers
     const headers = constructHeaders(req.headers);
 
-    // Sending to all webhooks
-    for (const webhook of WHRequestHandler.webhooks) {
-        if (webhook.id && webhook.token) {
-            try {
-                await WHRequestHandler.request(webhook, { headers, body: req.body }, true);
-                Logger.verbose(`Posted to ${webhook.name}.`);
-            } catch (err) {
-                Logger.fatal(`Couldn't post to ${webhook.name}.\n${err.stack}`);
-            }
-        }
-    }
-
-    // Executing all pending request
-    WHRequestHandler.executeWaiting();
+    RequestManager.request({ headers, body: req.body }, true);
 };
 
 exports.github = github;
