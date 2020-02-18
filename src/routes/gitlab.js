@@ -9,7 +9,8 @@ const { UNAUTHORIZED_CODE } = require('../utils/utils');
 const { IPBanHandler } = require('../services/IPBanHandler');
 const { RequestManager } = require('../services/requester/RequestManager');
 
-const { Parser } = require('../services/Parser');
+const { GitlabParser } = require('../services/parsers/GitlabParser');
+const parser = new GitlabParser();
 
 const gitlab = async(req, res) => {
     if (!req.headers['x-gitlab-event']
@@ -31,21 +32,15 @@ const gitlab = async(req, res) => {
     res.send('Success!');
     Logger.info('Forwarding gitlab request');
 
-    const embeds = Parser.parse(req.body);
-    // Close guard: doesn't send webhook if no embeds have been constructed
-    if (embeds.length === 0) {
+    const discordRequest = parser.parse(req.body);
+    // Close guard: doesn't send webhook if discordRequest is null
+    if (!discordRequest) {
         return;
     }
-    // Creating body formatted for discord
-    const body = {
-        username: 'GitLab',
-        avatar_url: `https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo.png`,
-        embeds, // parsing a discord formatted array of embeds with req datas
-    };
 
     const headers = { 'Content-Type': 'application/json' };
 
-    RequestManager.request( { headers, body } );
+    RequestManager.request( { headers, body: discordRequest } );
 };
 
 exports.gitlab = gitlab;
