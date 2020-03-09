@@ -5,14 +5,12 @@ const { RequestHandler } = require('./RequestHandler');
 
 const { Logger } = require('../../utils/Logger');
 
-const WEBHOOKS = require('../../../configs/webhooks.json');
-
 class RequestManager {
-    constructor(webhooks) {
+    constructor(webhooks, requestHandler) {
         this._webhooks = webhooks;
         this._executors = new Map();
 
-        this.requester = new RequestHandler();
+        this.requester = requestHandler || new RequestHandler();
     }
 
     /**
@@ -66,4 +64,4 @@ class RequestManager {
     }
 }
 
-exports.RequestManager = new RequestManager(WEBHOOKS);
+exports.RequestManager = RequestManager;
