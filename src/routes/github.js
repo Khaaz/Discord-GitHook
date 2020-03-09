@@ -6,7 +6,6 @@ const config = require('../../configs/config.json');
 const { Logger }  = require('../utils/Logger');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { RequestManager } = require('../services/requester/RequestManager');
 
 const { verifyGithubSignature, UNAUTHORIZED_CODE } = require('../utils/utils');
 
@@ -41,7 +40,7 @@ function constructHeaders(reqHeaders) {
     return headers;
 }
 
-const github = async(req, res) => {
+const github = async(manager, network, req, res) => {
     // Checking whether the authenticity of the connection is valid
     if (!req.headers['x-github-delivery']
         || (config.auth && !req.headers['x-hub-signature'] )
@@ -71,7 +70,7 @@ const github = async(req, res) => {
     // Creating new headers
     const headers = constructHeaders(req.headers);
 
-    RequestManager.request( { headers, body: req.body }, true);
+    manager.execute(network, { headers, body: req.body }, true);
 };
 
-exports.github = github;
+module.exports = github;

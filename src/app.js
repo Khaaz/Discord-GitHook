@@ -11,7 +11,7 @@ const { IPBanHandler } = require('./services/IPBanHandler');
 
 const config = require('../configs/config.json');
 
-const routes = require('./routes/index');
+const { router } = require('./routes/router');
 
 // const
 const app = express();
@@ -31,7 +31,7 @@ app.use( (req, res) => {
         return;
     }
 
-    routes.router(req, res);
+    router(req, res);
 } );
 
 app.listen(config.port, Logger.notice(`Listening to port ${config.port}`) );

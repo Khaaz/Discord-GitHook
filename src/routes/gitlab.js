@@ -7,12 +7,11 @@ const { Logger } = require('../utils/Logger');
 const { UNAUTHORIZED_CODE } = require('../utils/utils');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { RequestManager } = require('../services/requester/RequestManager');
 
 const { GitlabParser } = require('../services/parsers/GitlabParser');
 const parser = new GitlabParser();
 
-const gitlab = async(req, res) => {
+const gitlab = async(manager, network, req, res) => {
     if (!req.headers['x-gitlab-event']
         || (config.auth && !req.headers['x-gitlab-token'] )
         || (config.auth && req.headers['x-gitlab-token'] !== config.authorizationGitlab) ) {
@@ -40,7 +39,7 @@ const gitlab = async(req, res) => {
 
     const headers = { 'Content-Type': 'application/json' };
 
-    RequestManager.request( { headers, body: discordRequest } );
+    manager.execute(network, { headers, body: discordRequest } );
 };
 
-exports.gitlab = gitlab;
+module.exports = gitlab;
