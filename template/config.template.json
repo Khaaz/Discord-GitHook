@@ -3,5 +3,17 @@
     "auth": true,
     "authorizationGithub": "secret",
     "authorizationGitlab": "secret",
-    "blacklisted": ["ip", "ip"]
+    "blacklisted": ["ip", "ip"],
+    "networks": [
+        {
+            "name": "network1",
+            "authorizationGithub": "secret",
+            "authorizationGitlab": "secret"
+        },
+        {
+            "name": "network2",
+            "authorizationGithub": "secret",
+            "authorizationGitlab": "secret"
+        }
+    ]
 }
