@@ -2,11 +2,13 @@
     {
         "name": "webhook",
         "id": "webhookID",
-        "token": "webhookToken"
+        "token": "webhookToken",
+        "networks": ["network1", "network2"]
     },
     {
         "name": "webhook2",
         "id": "webhookID",
-        "token": "webhookToken"
+        "token": "webhookToken",
+        "networks": ["network1", "network2"]
     }
 ]
