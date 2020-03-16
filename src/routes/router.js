@@ -1,30 +1,37 @@
 'use strict';
 
-// Dependency
 const express = require('express');
 
 const config = require('../../configs/config.json');
 const webhooks = require('../../configs/webhooks.json');
 
-// Other
 const { NetworkManager } = require('../services/NetworkManager');
 
 const { Logger } = require('../utils/Logger');
 const { github, gitlab } = require('./index');
-// const
-const router = express.Router(); // eslint-disable-line
 
+const router = express.Router(); // eslint-disable-line new-cap
 const DEFAULT = 'default';
 
-if (!config.networks || config.networks.length === 0) {
-    config.networks = [DEFAULT];
-}
-
-for (const webhook of webhooks) {
-    if (!webhook.networks || webhook.networks.length === 0) {
-        webhook.networks = [DEFAULT];
+function validateConfig(_config, _webhooks) {
+    if (!_config.networks || _config.networks.length === 0) {
+        _config.networks = [{ name: DEFAULT }];
+    }
+    
+    for (const webhook of _webhooks) {
+        if (!webhook.networks || webhook.networks.length === 0) {
+            webhook.networks = [DEFAULT];
+        } else if (!_config.networks.some(n => webhook.networks.includes(n.name) ) ) {
+            webhook.networks.push(DEFAULT);
+        }
+    }
+    
+    if (_webhooks.find(w => w.networks.includes(DEFAULT) ) && !_config.networks.find(n => n.name === DEFAULT) ) {
+        _config.networks.push( { name: DEFAULT } );
     }
 }
+
+validateConfig(config, webhooks);
 
 const networkManager = new NetworkManager(config.networks, webhooks);
 
