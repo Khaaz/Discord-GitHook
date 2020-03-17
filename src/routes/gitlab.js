@@ -1,57 +1,41 @@
 'use strict';
 
-// Others
-const config = require('../../configs/config.json');
-
 const { Logger } = require('../utils/Logger');
+const { getIP, UNAUTHORIZED_CODE } = require('../utils/utils');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-const { WHRequestHandler } = require('../services/WHRequestHandler');
+const { GitlabParser } = require('../services/parsers/GitlabParser');
 
-const { Parser } = require('../services/Parser');
+const parser = new GitlabParser();
 
-const gitlab = async(req, res) => {
+const gitlab = async(manager, { network, auth }, req, res) => {
+    // AUTH check
     if (!req.headers['x-gitlab-event']
-        || (config.auth && !req.headers['x-gitlab-token'])
-        || req.headers['x-gitlab-token'] !== config.authorizationGitlab) {
+        || (auth && auth.length > 0 && !req.headers['x-gitlab-token'] )
+        || (auth && auth.length > 0 && req.headers['x-gitlab-token'] !== auth) ) {
         Logger.warn('Unauthorized connection: Refused!');
-        res.status(403).send('Unauthorized!');
+        res.status(UNAUTHORIZED_CODE).send('Unauthorized!');
 
-        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0])
-            || req.ip
-            || (req.connection && req.connection.remoteAddress);
+        const ip = getIP(req);
         Logger.warn(`IP: ${ip}`);
 
         IPBanHandler.countBan(ip);
         return;
     }
 
-    Logger.notice(`Gitlab: ${req.body.project.path_with_namespace} - ${req.body.project.http_url}`); // TO CHANGE
+    Logger.notice(`Gitlab: ${req.body.project ? `${req.body.project.path_with_namespace} - ${req.body.project.http_url}` : ''} `); // TO CHANGE
     res.send('Success!');
     Logger.info('Forwarding gitlab request');
 
-    // Creating body formatted for discord
-    const body = {
-        username: 'GitLab',
-        avatar_url: `https://gitlab.com/gitlab-com/gitlab-artwork/raw/master/logo/logo.png`,
-        embeds: Parser.parse(req.body), // parsing a discord formatted array of embeds with req datas
-    };
+    const discordRequest = parser.parse(req.body);
+    // Close guard: doesn't send webhook if discordRequest is null
+    if (!discordRequest) {
+        return;
+    }
 
     const headers = { 'Content-Type': 'application/json' };
 
-    // Sending to all webhooks
-    for (const webhook of WHRequestHandler.webhooks) {
-        if (webhook.id && webhook.token) {
-            try {
-                await WHRequestHandler.request(webhook, { headers, body });
-                Logger.verbose(`Posted to ${webhook.name}.`);
-            } catch (err) {
-                Logger.fatal(`Couldn't post to ${webhook.name}.\n${err.stack}`);
-            }
-        }
-    }
-
-    WHRequestHandler.executeWaiting();
+    manager.execute(network, { headers, body: discordRequest } );
 };
 
-exports.gitlab = gitlab;
+module.exports = gitlab;
