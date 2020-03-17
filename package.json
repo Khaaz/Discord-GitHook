@@ -24,12 +24,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Khaazz/Git-Discord-HookRouter.git"
+        "url": "git+https://github.com/Khaazz/Discord-GitHook.git"
     },
     "bugs": {
-        "url": "https://github.com/Khaazz/Git-Discord-HookRouter/issues"
+        "url": "https://github.com/Khaazz/Discord-GitHook/issues"
     },
-    "homepage": "https://github.com/Khaazz/Git-Discord-HookRouter#readme",
+    "homepage": "https://github.com/Khaazz/Discord-GitHook#readme",
     "keywords": [
         "github",
         "gitlab",
