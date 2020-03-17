@@ -1,3 +1,5 @@
+GITLAB: headers: x-gitlab-token => not encoded 
+
 # Git-Discord-HookRouter
 Manage all your GitHub / GitLab webhooks with one URL.  
 This lightweight API allows you to route GitHub and GitLab webhook requests to Discord. Allows easy management of multiple webhooks.

@@ -1,13 +1,9 @@
 'use strict';
 
-// Others
-const config = require('../../configs/config.json');
-
 const { Logger }  = require('../utils/Logger');
+const { verifyGithubSignature, getIP, UNAUTHORIZED_CODE } = require('../utils/utils');
 
 const { IPBanHandler } = require('../services/IPBanHandler');
-
-const { verifyGithubSignature, UNAUTHORIZED_CODE } = require('../utils/utils');
 
 /**
  * Build an Headers Object from req headers object
@@ -36,21 +32,18 @@ function constructHeaders(reqHeaders) {
         headers['x-hub-signature'] = reqHeaders['x-hub-signature'];
     }
      
-
     return headers;
 }
 
-const github = async(manager, network, req, res) => {
-    // Checking whether the authenticity of the connection is valid
+const github = async(manager, { network, auth }, req, res) => {
+    // AUTH check
     if (!req.headers['x-github-delivery']
-        || (config.auth && !req.headers['x-hub-signature'] )
-        || !verifyGithubSignature(req.headers['x-hub-signature'], req.body) ) {
+        || (auth && auth.length > 0 && !req.headers['x-hub-signature'] )
+        || (auth && auth.length > 0 && !verifyGithubSignature(req.headers['x-hub-signature'], req.body, auth) ) ) {
         Logger.warn('Unauthorized connection: Refused!');
         res.status(UNAUTHORIZED_CODE).send('Unauthorized!');
 
-        const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0] )
-            || req.ip
-            || (req.connection && req.connection.remoteAddress);
+        const ip = getIP(req);
         Logger.warn(`IP: ${ip}`);
 
         IPBanHandler.countBan(ip);
