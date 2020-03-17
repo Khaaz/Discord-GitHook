@@ -1,29 +1,23 @@
 'use strict';
-// Dependencies
 const express = require('express');
 const bodyParser = require('body-parser');
 
-// Others
 const { Logger } = require('./utils/Logger.js');
-const { UNAUTHORIZED_CODE } = require('./utils/utils');
-
+const { getIP, UNAUTHORIZED_CODE } = require('./utils/utils');
 const { IPBanHandler } = require('./services/IPBanHandler');
 
 const config = require('../configs/config.json');
-
 const { router } = require('./routes/router');
 
-// const
 const app = express();
 
 app.use(bodyParser.json() );
 app.use(bodyParser.urlencoded( { extended: true } ) );
 
+// Handle banned ips - then reroute to the correct endpoint
 app.use( (req, res) => {
     // IP should always exist
-    const ip = (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0] )
-        || req.ip
-        || (req.connection && req.connection.remoteAddress);
+    const ip = getIP(req);
 
     if (!ip || IPBanHandler.banned.has(ip) ) {
         res.status(UNAUTHORIZED_CODE).send('Unauthorized');
@@ -34,4 +28,4 @@ app.use( (req, res) => {
     router(req, res);
 } );
 
-app.listen(config.port, Logger.notice(`Listening to port ${config.port}`) );
+app.listen(config.port, Logger.notice(`Listening on port ${config.port}`) );
