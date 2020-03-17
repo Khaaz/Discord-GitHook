@@ -1,6 +1,5 @@
 {
     "port": "3000",
-    "auth": true,
     "authorizationGithub": "secret",
     "authorizationGitlab": "secret",
     "blacklisted": ["ip", "ip"],

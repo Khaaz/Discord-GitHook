@@ -9,6 +9,6 @@
         "name": "webhook2",
         "id": "webhookID",
         "token": "webhookToken",
-        "networks": ["network1", "network2"]
+        "networks": ["network1"]
     }
 ]
