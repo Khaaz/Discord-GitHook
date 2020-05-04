@@ -18,7 +18,9 @@ function constructHeaders(reqHeaders) {
     headers['content-length'] = reqHeaders['content-length'];
     headers['content-type'] = reqHeaders['content-type'];
     headers['user-agent'] = reqHeaders['user-agent'];
-    headers['x-forwarded-for'] = reqHeaders['x-forwarded-for'];
+    if (reqHeaders['x-forwarded-for'] ) {
+        headers['x-forwarded-for'] = reqHeaders['x-forwarded-for'];
+    }
     headers['x-github-delivery'] = reqHeaders['x-github-delivery'];
     headers['x-github-event'] = reqHeaders['x-github-event'];
 
