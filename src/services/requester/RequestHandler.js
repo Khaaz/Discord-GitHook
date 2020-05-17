@@ -4,7 +4,7 @@ const superagent = require('superagent');
 
 class RequestHandler {
     constructor() {
-        this._baseURL = 'https://discordapp.com/api';
+        this._baseURL = 'https://discord.com/api';
         this.defaultHeaders = {
             'X-RateLimit-Precision': 'millisecond',
         };
