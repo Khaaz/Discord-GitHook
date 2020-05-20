@@ -2,7 +2,7 @@
     "name": "discord-githook",
     "version": "3.0.0",
     "description": "Route GitHub and GitLab webhook requests to discord.",
-    "author": "KhaaZ#0001",
+    "author": "Khaaz <khaaz.dev@gmail.com>",
     "license": "MIT",
     "main": "index.js",
     "dependencies": {
@@ -24,12 +24,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Khaazz/Discord-GitHook.git"
+        "url": "git+https://github.com/Khaaz/Discord-GitHook.git"
     },
     "bugs": {
-        "url": "https://github.com/Khaazz/Discord-GitHook/issues"
+        "url": "https://github.com/Khaaz/Discord-GitHook/issues"
     },
-    "homepage": "https://github.com/Khaazz/Discord-GitHook#readme",
+    "homepage": "https://github.com/Khaaz/Discord-GitHook#readme",
     "keywords": [
         "github",
         "gitlab",
