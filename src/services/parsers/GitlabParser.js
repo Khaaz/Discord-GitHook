@@ -114,13 +114,13 @@ class GitlabParser extends Parser {
 
         if (data.commits.length > 0) { // commits
             embed.color = COLORS.PUSH;
-            embed.url = `${data.project.homepage}/commit/${data.after}/?view=parallel`;
+            embed.url = `${data.project.homepage}/commit/${data.after}/?view=inline`;
             
             embed.title = `[${data.project.name}:${branchName}] ${data.total_commits_count} new commit${data.total_commits_count > 1 ? 's' : ''}`;
 
             const desc = [];
             for (const commit of data.commits) {
-                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}?view=parallel) ${this.removeLinebreak(this.formatString(String(commit.message) ) )} - ${commit.author.name.trim()}`);
+                desc.push(`[\`${commit.id.slice(0, 6)}\`](${commit.url}?view=inline) ${this.removeLinebreak(this.formatString(String(commit.message) ) )} - ${commit.author.name.trim()}`);
             }
             embed.description = (desc.length > 5)
                 ? desc.slice(0, 5).join('\n')
@@ -130,7 +130,7 @@ class GitlabParser extends Parser {
 
             embed.title = `[${data.project.name}] Branch ${branchName} was force pushed to \`${data.after.slice(0, 6)}\``;
 
-            embed.description = `[Compare changes](${data.project.homepage}/commit/${data.after}?view=parallel)`;
+            embed.description = `[Compare changes](${data.project.homepage}/commit/${data.after}?view=inline)`;
         }
 
         return embedBranch
